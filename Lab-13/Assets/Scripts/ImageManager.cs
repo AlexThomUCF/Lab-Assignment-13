@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using GameAnalyticsSDK; // added for analytics
 
 public class ImageManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class ImageManager : MonoBehaviour
         {
             Debug.Log($"[CACHE USED] Returning cached image for: {url}");
             callback(imageCache[url]);
+
+            // Analytics
+            GameAnalytics.NewDesignEvent($"ImageCached:{url}");
         }
         else
         {
@@ -49,6 +53,9 @@ public class ImageManager : MonoBehaviour
         imageCache[url] = tex;
 
         Debug.Log($"[DOWNLOADED SUCCESS] Image downloaded and cached: {url}");
+
+        // Analytics
+        GameAnalytics.NewDesignEvent($"ImageDownloaded:{url}");
 
         callback(tex);
     }

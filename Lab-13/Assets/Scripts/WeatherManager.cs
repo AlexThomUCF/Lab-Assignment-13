@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using GameAnalyticsSDK; // added for analytics
 
 public class WeatherManager : MonoBehaviour
 {
@@ -19,9 +20,9 @@ public class WeatherManager : MonoBehaviour
     private const string API =
         "https://api.openweathermap.org/data/2.5/weather?q={0}&appid={1}&units=metric";
 
-    private void Update()
+    private void Start()
     {
-        RefreshWeather();
+        RefreshWeather(); // call once at start
     }
 
     public void RefreshWeather()
@@ -89,7 +90,11 @@ public class WeatherManager : MonoBehaviour
 
         UpdateSkybox(data.description);
         UpdateLighting(data.description, data.localTime);
-        DynamicGI.UpdateEnvironment(); // force refresh environment
+        DynamicGI.UpdateEnvironment();
+
+        // --- Analytics ---
+        GameAnalytics.NewDesignEvent($"CitySelected:{data.cityName}");
+        GameAnalytics.NewDesignEvent($"WeatherApplied:{data.description}");
     }
 
     // ---------------- SKYBOX ---------------------
